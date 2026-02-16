@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -47,7 +49,7 @@ public class GradeController {
     @Operation(summary = "Lanca nota em um boletim.")
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Nota criada com sucesso."),
+            @ApiResponse(responseCode = "201", description = "Nota criada com sucesso."),
             @ApiResponse(responseCode = "403", description = "Sem permissao."),
             @ApiResponse(responseCode = "404", description = "Boletim ou materia nao encontrados."),
             @ApiResponse(responseCode = "409", description = "Nota duplicada para materia/periodo.")
@@ -58,7 +60,13 @@ public class GradeController {
             @RequestBody @Valid GradeRequestDTO request
     ) {
         GradeResponseDTO grade = createGradeUseCase.execute(currentUser, transcriptId, request);
-        return ResponseEntity.ok(
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{gradeId}")
+                .buildAndExpand(grade.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(
                 new ResponseDefault<>(
                         true,
                         grade,

@@ -21,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -46,14 +48,19 @@ public class StudentController {
             description = "Cria um novo perfil de aluno com usuario e endereco vinculados. Email, CPF e RG devem ser unicos."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Aluno criado com sucesso."),
+            @ApiResponse(responseCode = "201", description = "Aluno criado com sucesso."),
             @ApiResponse(responseCode = "400", description = "Dados invalidos enviados pelo cliente."),
             @ApiResponse(responseCode = "409", description = "Email, CPF ou RG ja cadastrado.")
     })
     public ResponseEntity<ResponseDefault<StudentResponseDTO>> create(@RequestBody @Valid StudentRequestDTO request){
         StudentResponseDTO student = createStudentUseCase.execute(request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(student.id())
+                .toUri();
 
-        return ResponseEntity.ok(
+        return ResponseEntity.created(location).body(
                 new ResponseDefault<>(
                         true,
                         student,

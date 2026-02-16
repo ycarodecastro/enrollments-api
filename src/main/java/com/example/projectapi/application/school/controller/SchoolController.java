@@ -23,7 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -48,7 +50,7 @@ public class SchoolController {
             description = "Cria um novo perfil de escola com usuario e endereco vinculados."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Escola criada com sucesso."),
+            @ApiResponse(responseCode = "201", description = "Escola criada com sucesso."),
             @ApiResponse(responseCode = "400", description = "Dados invalidos enviados pelo cliente."),
             @ApiResponse(responseCode = "409", description = "Email ou CNPJ ja cadastrado.")
     })
@@ -57,8 +59,13 @@ public class SchoolController {
             SchoolRequestDTO request
     ){
         SchoolResponseDTO school = createSchoolUseCase.execute(request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(school.id())
+                .toUri();
 
-        return ResponseEntity.ok(
+        return ResponseEntity.created(location).body(
                 new ResponseDefault<>(
                         true,
                         school,

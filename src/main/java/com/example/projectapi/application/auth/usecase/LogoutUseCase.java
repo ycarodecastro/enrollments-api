@@ -4,7 +4,9 @@ import com.example.projectapi.domain.refreshToken.repository.RefreshTokenReposit
 import com.example.projectapi.infra.redis.RedisJwtService;
 import com.example.projectapi.security.JwtUtil;
 import io.jsonwebtoken.JwtException;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,10 +15,12 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LogoutUseCase {
     private final JwtUtil jwtUtil;
     private final RedisJwtService redisJwtService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final MeterRegistry meterRegistry;
 
     public void execute(String token) {
         try {
@@ -30,7 +34,11 @@ public class LogoutUseCase {
             }
 
             refreshTokenRepository.deleteByUserId(userId);
+            meterRegistry.counter("auth.logout.success").increment();
+            log.info("Logout realizado com sucesso. userId={}", userId);
         } catch (JwtException | IllegalArgumentException e) {
+            meterRegistry.counter("auth.logout.failed").increment();
+            log.warn("Falha ao realizar logout por token invalido.");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token invalido.");
         }
     }

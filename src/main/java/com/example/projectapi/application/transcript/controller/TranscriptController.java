@@ -3,6 +3,7 @@ package com.example.projectapi.application.transcript.controller;
 import com.example.projectapi.application.common.ResponseDefault;
 import com.example.projectapi.application.transcript.dto.TranscriptResponseDTO;
 import com.example.projectapi.application.transcript.usecase.GetCurrentTranscriptUseCase;
+import com.example.projectapi.application.transcript.usecase.GetStudentTranscriptUseCase;
 import com.example.projectapi.application.transcript.usecase.ListAllTranscriptUseCase;
 import com.example.projectapi.domain.user.model.UserEntity;
 import com.example.projectapi.security.annotation.CurrentUser;
@@ -16,10 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
 import java.util.List;
@@ -36,6 +34,7 @@ public class TranscriptController {
 
     private final ListAllTranscriptUseCase listAllTranscriptUseCase;
     private final GetCurrentTranscriptUseCase getCurrentTranscriptUseCase;
+    private final GetStudentTranscriptUseCase getStudentTranscriptUseCase;
 
     @GetMapping
     @Operation(summary = "Lista boletins do aluno autenticado.")
@@ -71,6 +70,26 @@ public class TranscriptController {
                         true,
                         transcript,
                         "Boletim atual obtido com sucesso.",
+                        List.of()
+                )
+        );
+    }
+
+    @GetMapping("/student/{idStudent}")
+    @Operation(summary = "Escola consulta boletim de um aluno específico por ano.")
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<ResponseDefault<TranscriptResponseDTO>> getStudentTranscript(
+            @Parameter(hidden = true) @CurrentUser UserEntity currentUser,
+            @PathVariable Long idStudent,
+            @RequestParam(required = false) Year schoolYear
+    ) {
+        TranscriptResponseDTO transcript = getStudentTranscriptUseCase.execute(currentUser, idStudent, schoolYear);
+
+        return ResponseEntity.ok(
+                new ResponseDefault<>(
+                        true,
+                        transcript,
+                        "Boletim do aluno obtido com sucesso.",
                         List.of()
                 )
         );

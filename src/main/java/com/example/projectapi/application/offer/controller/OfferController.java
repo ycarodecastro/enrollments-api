@@ -23,7 +23,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -47,7 +49,7 @@ public class OfferController {
     )
     @SecurityRequirement(name = "bearer-key")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Oferta criada com sucesso."),
+            @ApiResponse(responseCode = "201", description = "Oferta criada com sucesso."),
             @ApiResponse(responseCode = "400", description = "Dados invalidos enviados pelo cliente."),
             @ApiResponse(responseCode = "401", description = "Nao autenticado."),
             @ApiResponse(responseCode = "403", description = "Sem permissao."),
@@ -58,8 +60,13 @@ public class OfferController {
             @RequestBody @Valid OfferRequestDTO request
     ) {
         OfferResponseDTO offer = createOfferUseCase.execute(currentUser, request);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(offer.id())
+                .toUri();
 
-        return ResponseEntity.ok(
+        return ResponseEntity.created(location).body(
                 new ResponseDefault<>(
                         true,
                         offer,
