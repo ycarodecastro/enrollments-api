@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class GradeAlreadyExistsException extends RuntimeException {
 
     public GradeAlreadyExistsException() {
-        super("Nota ja cadastrada para essa materia e periodo neste boletim.");
+        super("Ja existe nota cadastrada para esta materia e periodo no boletim.");
     }
 }
+

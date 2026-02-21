@@ -10,3 +10,4 @@ public class TranscriptAlreadyExistsException extends RuntimeException {
         super("Boletim ja cadastrado para este ano letivo.");
     }
 }
+

@@ -18,11 +18,12 @@ public interface OfferRepository extends JpaRepository<OfferEntity, Long> {
     Optional<OfferEntity> findById(Long offerId);
 
     @Transactional
-    void deleteByEndDateLessThanEqual(LocalDate date);
+    void deleteByEndDateLessThan(LocalDate date);
 
     // ver se tem uma forma mais profissional de diminuir a quantidade de ofertas
     @Modifying
     @Query("UPDATE OfferEntity o SET o.availableSeats = o.availableSeats - 1 " +
             "WHERE o.id = :id AND o.availableSeats > 0")
     int decrementAvailableSeats(Long id);
+
 }

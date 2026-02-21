@@ -4,10 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class InscribeAlreadyExistsException extends RuntimeException {
-
-    public InscribeAlreadyExistsException() {
-        super("Voce ja possui inscricao para esta oferta.");
+public class InscribeAlreadyTranscriptException extends RuntimeException {
+    public InscribeAlreadyTranscriptException() {
+        super("O estudante já possui um boletim.");
     }
 }
-

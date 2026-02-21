@@ -8,7 +8,8 @@ import lombok.*;
 @Entity
 @Table(
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_inscribe_student_offer", columnNames = {"student_id", "offer_id"})
+                @UniqueConstraint(name = "uk_inscribe_student_offer", columnNames = {"student_id", "offer_id"}),
+                @UniqueConstraint(name = "uk_report_student_year", columnNames = {"student_id", "school_year"})
         }
 )
 @Getter

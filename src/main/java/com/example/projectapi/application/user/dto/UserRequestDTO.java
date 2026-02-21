@@ -17,6 +17,6 @@ public record UserRequestDTO (
                 example = "Senha123"
         )
         @NotBlank(message = "O campo de senha não pode ficar vazio.")
-        @Password
+        @Password(message = "A senha é inválida.")
         String password
 ) {}

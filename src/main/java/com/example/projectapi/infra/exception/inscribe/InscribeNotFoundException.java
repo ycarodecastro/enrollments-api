@@ -10,3 +10,4 @@ public class InscribeNotFoundException extends RuntimeException {
         super("Inscricao nao encontrada.");
     }
 }
+

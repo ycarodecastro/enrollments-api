@@ -14,4 +14,6 @@ public interface TranscriptRepository extends JpaRepository<TranscriptEntity, Lo
     Page<TranscriptEntity> findAllByStudent_Id(Long studentId, Pageable pageable);
 
     Optional<TranscriptEntity> findByStudent_IdAndSchoolYear(Long studentId, Year targetYear);
+
+    boolean existsByStudent_IdAndSchoolYear(Long studentId, Year schoolYear);
 }

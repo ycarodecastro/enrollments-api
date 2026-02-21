@@ -81,7 +81,7 @@ public class TranscriptController {
     public ResponseEntity<ResponseDefault<TranscriptResponseDTO>> getStudentTranscript(
             @Parameter(hidden = true) @CurrentUser UserEntity currentUser,
             @PathVariable Long idStudent,
-            @RequestParam(required = false) Year schoolYear
+            @RequestParam Year schoolYear
     ) {
         TranscriptResponseDTO transcript = getStudentTranscriptUseCase.execute(currentUser, idStudent, schoolYear);
 

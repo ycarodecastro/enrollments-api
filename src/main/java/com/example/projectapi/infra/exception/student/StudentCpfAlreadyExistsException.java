@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class StudentCpfAlreadyExistsException extends RuntimeException {
 
     public StudentCpfAlreadyExistsException() {
-        super("CPF já cadastrado.");
+        super("CPF ja cadastrado.");
     }
 }
+

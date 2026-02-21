@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class SchoolNotFoundException extends RuntimeException {
 
     public SchoolNotFoundException() {
-        super("Escola não encontrada.");
+        super("Escola nao encontrada.");
     }
 }
+

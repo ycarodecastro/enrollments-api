@@ -4,6 +4,9 @@ import com.example.projectapi.application.auth.dto.RefreshToken.RefreshTokenResp
 import com.example.projectapi.application.auth.dto.Token.LoginRequestDTO;
 import com.example.projectapi.domain.user.model.UserEntity;
 import com.example.projectapi.domain.user.repository.UserRepository;
+import com.example.projectapi.infra.exception.auth.AuthFailedInactiveException;
+import com.example.projectapi.infra.exception.auth.AuthFailedUnauthorizedException;
+import com.example.projectapi.infra.exception.auth.AuthRateLimitException;
 import com.example.projectapi.infra.redis.RedisRateLimitProperties;
 import com.example.projectapi.infra.redis.RedisRateLimitService;
 import com.example.projectapi.util.RequestIpUtil;
@@ -11,10 +14,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
 
@@ -41,7 +42,7 @@ public class LoginUseCase {
                 || rateLimitService.isBlocked(ipKey, rateLimitProperties.getIpMaxAttempts())) {
             meterRegistry.counter("auth.login.blocked").increment();
             log.warn("Login bloqueado por rate limit para email {}.", email);
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many login attempts");
+            throw new AuthRateLimitException();
         }
 
         Duration blockDuration = Duration.ofMinutes(rateLimitProperties.getBlockDurationMinutes());
@@ -52,7 +53,7 @@ public class LoginUseCase {
                     rateLimitService.incrementAttempts(ipKey, blockDuration);
                     meterRegistry.counter("auth.login.failed", "reason", "invalid_credentials").increment();
                     log.warn("Falha de login por credenciais invalidas para email {}.", email);
-                    return new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais invalidas");
+                    return new AuthFailedUnauthorizedException();
                 });
 
         if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
@@ -60,13 +61,13 @@ public class LoginUseCase {
             rateLimitService.incrementAttempts(ipKey, blockDuration);
             meterRegistry.counter("auth.login.failed", "reason", "invalid_credentials").increment();
             log.warn("Falha de login por credenciais invalidas para email {}.", email);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais invalidas");
+            throw new AuthFailedUnauthorizedException();
         }
 
         if (!user.isActive()) {
             meterRegistry.counter("auth.login.failed", "reason", "inactive_user").increment();
             log.warn("Falha de login para usuario inativo. userId={}", user.getId());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sua conta esta inativa.");
+            throw new AuthFailedInactiveException();
         }
 
         rateLimitService.reset(userKey);

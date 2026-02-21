@@ -34,66 +34,70 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        HttpSecurity configured = httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/error").permitAll()
-
-                        // Auth
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
-
-                        // Students
-                        .requestMatchers(HttpMethod.GET, "/api/students/profile").hasRole(UserRole.ALUNO.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/students").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/students/me").hasRole(UserRole.ALUNO.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/api/students/me").hasRole(UserRole.ALUNO.toString())
-
-                        // Schools
-                        .requestMatchers(HttpMethod.GET, "/api/schools/profile").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.GET, "/api/schools/students").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/schools").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/schools/me").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/api/schools/me").hasRole(UserRole.ESCOLA.toString())
-
-                        // Offers
-                        .requestMatchers(HttpMethod.GET, "/api/offers").hasRole(UserRole.ALUNO.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/offers").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/offers/**").hasRole(UserRole.ESCOLA.toString())
-
-                        // Inscribes
-                        .requestMatchers(HttpMethod.GET, "/api/inscribes").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/inscribes").hasRole(UserRole.ALUNO.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/inscribes/**").hasRole(UserRole.ESCOLA.toString())
-
-                        // Transcripts
-                        .requestMatchers(HttpMethod.GET, "/api/transcripts/current").hasRole(UserRole.ALUNO.toString())
-                        .requestMatchers(HttpMethod.GET, "/api/transcripts").hasRole(UserRole.ALUNO.toString())
-                        .requestMatchers(HttpMethod.GET, "/api/transcripts/student/**").hasRole(UserRole.ESCOLA.toString())
-
-                        // Subjects
-                        .requestMatchers(HttpMethod.GET, "/api/subjects").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/subjects").hasRole(UserRole.ESCOLA.toString())
-
-                        // Grades
-                        .requestMatchers(HttpMethod.POST, "/api/transcripts/*/grades").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/transcripts/*/grades/**").hasRole(UserRole.ESCOLA.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/api/transcripts/*/grades/**").hasRole(UserRole.ESCOLA.toString())
-
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         if (h2ConsoleEnabled) {
-            configured.authorizeHttpRequests(authorize ->
-                    authorize.requestMatchers("/h2-console/**").permitAll()
-            );
-            configured.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+            httpSecurity.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
         }
 
-        return configured.build();
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorize -> {
+                    authorize
+                            .requestMatchers("/error").permitAll()
+                            .requestMatchers(AUTH_WHITELIST).permitAll();
+
+                    // H2 Console (dentro do authorizeHttpRequests e ANTES do anyRequest)
+                    if (h2ConsoleEnabled) {
+                        authorize.requestMatchers("/h2-console/**").permitAll();
+                    }
+
+                    authorize
+
+                            // Auth
+                            .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
+
+                            // Students
+                            .requestMatchers(HttpMethod.GET, "/api/students/profile").hasRole(UserRole.ALUNO.toString())
+                            .requestMatchers(HttpMethod.POST, "/api/students").permitAll()
+                            .requestMatchers(HttpMethod.PUT, "/api/students/me").hasRole(UserRole.ALUNO.toString())
+                            .requestMatchers(HttpMethod.DELETE, "/api/students/me").hasRole(UserRole.ALUNO.toString())
+
+                            // Schools
+                            .requestMatchers(HttpMethod.GET, "/api/schools/profile").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.GET, "/api/schools/students").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.POST, "/api/schools").permitAll()
+                            .requestMatchers(HttpMethod.PUT, "/api/schools/me").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.DELETE, "/api/schools/me").hasRole(UserRole.ESCOLA.toString())
+
+                            // Offers
+                            .requestMatchers(HttpMethod.GET, "/api/offers").hasRole(UserRole.ALUNO.toString())
+                            .requestMatchers(HttpMethod.POST, "/api/offers").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.PUT, "/api/offers/**").hasRole(UserRole.ESCOLA.toString())
+
+                            // Inscribes
+                            .requestMatchers(HttpMethod.GET, "/api/inscribes").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.POST, "/api/inscribes").hasRole(UserRole.ALUNO.toString())
+                            .requestMatchers(HttpMethod.PUT, "/api/inscribes/**").hasRole(UserRole.ESCOLA.toString())
+
+                            // Transcripts
+                            .requestMatchers(HttpMethod.GET, "/api/transcripts/current").hasRole(UserRole.ALUNO.toString())
+                            .requestMatchers(HttpMethod.GET, "/api/transcripts").hasRole(UserRole.ALUNO.toString())
+                            .requestMatchers(HttpMethod.GET, "/api/transcripts/student/**").hasRole(UserRole.ESCOLA.toString())
+
+                            // Subjects
+                            .requestMatchers(HttpMethod.GET, "/api/subjects").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.POST, "/api/subjects").hasRole(UserRole.ESCOLA.toString())
+
+                            // Grades
+                            .requestMatchers(HttpMethod.POST, "/api/transcripts/*/grades").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.PUT, "/api/transcripts/*/grades/**").hasRole(UserRole.ESCOLA.toString())
+                            .requestMatchers(HttpMethod.DELETE, "/api/transcripts/*/grades/**").hasRole(UserRole.ESCOLA.toString())
+
+                            .anyRequest().authenticated();
+                })
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }

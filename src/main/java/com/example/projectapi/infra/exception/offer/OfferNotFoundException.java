@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class OfferNotFoundException extends RuntimeException {
     public OfferNotFoundException() {
-        super("Oferta não encontrada.");
+        super("Oferta nao encontrada.");
     }
 }
+

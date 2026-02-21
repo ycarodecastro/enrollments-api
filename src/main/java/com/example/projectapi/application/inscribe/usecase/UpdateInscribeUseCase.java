@@ -10,8 +10,10 @@ import com.example.projectapi.domain.offer.repository.OfferRepository;
 import com.example.projectapi.domain.school.model.SchoolEntity;
 import com.example.projectapi.domain.school.repository.SchoolRepository;
 import com.example.projectapi.domain.student.event.StudentEnrolledEvent;
+import com.example.projectapi.domain.transcript.repository.TranscriptRepository;
 import com.example.projectapi.domain.user.model.UserEntity;
 import com.example.projectapi.infra.exception.ForbiddenException;
+import com.example.projectapi.infra.exception.inscribe.InscribeAlreadyTranscriptException;
 import com.example.projectapi.infra.exception.inscribe.InscribeNotFoundException;
 import com.example.projectapi.infra.exception.inscribe.InscribeStudentAlreadySchool;
 import com.example.projectapi.infra.exception.offer.OfferNoAvailableSeatsException;
@@ -31,6 +33,7 @@ public class UpdateInscribeUseCase {
     private final SchoolRepository schoolRepository;
     private final InscribeConverter inscribeConverter;
     private final OfferRepository offerRepository;
+    private final TranscriptRepository transcriptRepository;
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -67,6 +70,13 @@ public class UpdateInscribeUseCase {
                 log.warn("Falha ao atualizar inscricao. Estudante ja pertence a outra escola.");
                 throw new InscribeStudentAlreadySchool();
             }
+
+            if (transcriptRepository.existsByStudent_IdAndSchoolYear(inscribe.getStudent().getId(), inscribe.getOffer().getSchoolYear())) {
+                log.error("Tentativa de aceite duplicado para o aluno {} no ano {}",
+                        inscribe.getStudent().getId(), inscribe.getOffer().getSchoolYear());
+                throw new InscribeAlreadyTranscriptException(); // Exception customizada que retorna 400 ou 409
+            }
+
 
             int updatedRows = offerRepository.decrementAvailableSeats(inscribe.getOffer().getId());
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class OfferNoAvailableSeatsException extends RuntimeException {
 
     public OfferNoAvailableSeatsException() {
-        super("Infelizmente as vagas para esta oferta acabaram.");
+        super("Nao ha vagas disponiveis para esta oferta.");
     }
 }
+

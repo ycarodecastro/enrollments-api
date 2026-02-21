@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InscribeStudentAlreadySchool extends RuntimeException {
     public InscribeStudentAlreadySchool() {
 
-        super("O estudante já possui uma escola.");
+        super("O estudante ja esta vinculado a uma escola.");
     }
 }
+

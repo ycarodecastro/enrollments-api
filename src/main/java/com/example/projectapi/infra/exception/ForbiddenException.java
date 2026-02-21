@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ForbiddenException extends RuntimeException {
 
     public ForbiddenException() {
-        super("Você não tem permissão para executar essa ação.");
+        super("Voce nao tem permissao para executar esta acao.");
     }
 }
+

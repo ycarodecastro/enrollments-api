@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class SchoolCnpjAlreadyExistsException extends RuntimeException {
 
     public SchoolCnpjAlreadyExistsException() {
-        super("CNPJ já cadastrado.");
+        super("CNPJ ja cadastrado.");
     }
 }
+

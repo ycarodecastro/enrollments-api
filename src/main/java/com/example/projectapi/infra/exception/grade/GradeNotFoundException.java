@@ -10,3 +10,4 @@ public class GradeNotFoundException extends RuntimeException {
         super("Nota nao encontrada.");
     }
 }
+

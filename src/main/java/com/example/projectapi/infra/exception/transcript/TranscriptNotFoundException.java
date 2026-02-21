@@ -10,3 +10,4 @@ public class TranscriptNotFoundException extends RuntimeException {
         super("Boletim nao encontrado.");
     }
 }
+

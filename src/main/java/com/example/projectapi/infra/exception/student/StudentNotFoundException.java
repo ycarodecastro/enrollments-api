@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class StudentNotFoundException extends RuntimeException {
 
     public StudentNotFoundException() {
-        super("Aluno não encontrado.");
+        super("Aluno nao encontrado.");
     }
 }
+

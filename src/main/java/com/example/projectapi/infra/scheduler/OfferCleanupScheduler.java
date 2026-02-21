@@ -18,7 +18,7 @@ public class OfferCleanupScheduler {
     @Scheduled(cron = "0 0 0 * * *")
     public void deleteExpiredOffers() {
         log.info("Iniciando limpeza de ofertas expiradas...");
-        offerRepository.deleteByEndDateLessThanEqual(LocalDate.now());
+        offerRepository.deleteByEndDateLessThan(LocalDate.now());
         log.info("Limpeza concluída.");
     }
 }

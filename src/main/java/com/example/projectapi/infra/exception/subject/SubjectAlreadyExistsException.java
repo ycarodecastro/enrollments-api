@@ -10,3 +10,4 @@ public class SubjectAlreadyExistsException extends RuntimeException {
         super("Materia ja cadastrada para esta escola.");
     }
 }
+

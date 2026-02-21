@@ -1,56 +1,58 @@
 package com.example.projectapi.infra.redis;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import com.example.projectapi.infra.exception.redis.RedisFailedConsult;
+import com.example.projectapi.infra.exception.redis.RedisFailedIncrementAttempts;
+import com.example.projectapi.infra.exception.redis.RedisFailedResetKey;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class RedisRateLimitService {
 
-    private static final Logger log = LoggerFactory.getLogger(RedisRateLimitService.class);
+    private final RedisService redisService;
 
-    private final StringRedisTemplate redis;
-
-    public RedisRateLimitService(StringRedisTemplate redis) {
-        this.redis = redis;
-    }
-
-    public long incrementAttempts(String key, Duration ttl){
+    public void incrementAttempts(String key, Duration ttl) {
         try {
-            Long attempts = redis.opsForValue().increment(key);
+            Long attempts = redisService.increment(key);
 
-            if(attempts != null && attempts == 1){
-                redis.expire(key, ttl);
+            if (attempts != null && attempts == 1) {
+                redisService.expire(key, ttl);
             }
-
-            return attempts == null ? 0 : attempts;
         } catch (RuntimeException ex) {
-            log.warn("Falha ao incrementar tentativas no Redis para chave {}", key, ex);
-            return 0;
+            log.warn("Falha ao incrementar tentativas no Redis para chave {}.", key, ex);
+            throw new RedisFailedIncrementAttempts();
         }
     }
 
-    public boolean isBlocked(String key, int maxAttempts){
+        public boolean isBlocked(String key, int maxAttempts){
         try {
-            String value = redis.opsForValue().get(key);
+            String value = redisService.get(key);
+            return value != null && Integer.parseInt(value) >= maxAttempts;
 
-            if(value == null) return false;
-
-            return Integer.parseInt(value) >= maxAttempts;
-        } catch (RuntimeException ex) {
+        } catch (Exception ex) {
             log.warn("Falha ao consultar bloqueio no Redis para chave {}", key, ex);
-            return false;
+            throw new RedisFailedConsult();
         }
     }
 
+    // Metodo que reseta (remove) a chave do Redis.
+    // Isso limpa o contador de tentativas, permitindo que o usuário/IP volte a tentar.
     public void reset(String key){
         try {
-            redis.delete(key);
+            redisService.delete(key);
+
         } catch (RuntimeException ex) {
-            log.warn("Falha ao resetar chave de rate-limit no Redis para chave {}", key, ex);
+            log.warn(
+                    "Falha ao resetar chave de rate-limit no Redis para chave {}",
+                    key, ex
+            );
+
+            throw new RedisFailedResetKey();
         }
     }
 }

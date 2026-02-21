@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class SubjectNotFoundException extends RuntimeException {
 
     public SubjectNotFoundException() {
-        super("Materia nao encontrada para a escola.");
+        super("Materia nao encontrada para esta escola.");
     }
 }
+

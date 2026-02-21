@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record AddressRequestDTO(
-        @Schema(description = "CEP somente numeros (8 digitos).", pattern = "^[0-9]{8}$", example = "01001000")
+        @Schema(description = "CEP somente numeros (8 digitos).", pattern = "^[0-9]{8}$", example = "600000-00")
         @NotBlank(message = "O campo de cep é obrigatorio.")
         @Cep
         @JsonDeserialize(using = CleanupDeserializer.class)

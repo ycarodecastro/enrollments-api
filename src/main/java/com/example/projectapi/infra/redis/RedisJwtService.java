@@ -1,34 +1,23 @@
 package com.example.projectapi.infra.redis;
 
-import org.springframework.data.redis.core.StringRedisTemplate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
-
-@Service
+@Service // Anotação do Spring que registra essa classe como um "serviço" no contexto da aplicação.
+@RequiredArgsConstructor
 public class RedisJwtService {
 
-    private final StringRedisTemplate redis;
-
-    public RedisJwtService(StringRedisTemplate redis) {
-        this.redis = redis;
-    }
+    private final RedisService redisService;
 
     private String buildKey(String token){
         return "jwt:blacklist:" + token;
     }
 
     public void blacklist(String jti, long ttl){
-
-        redis.opsForValue()
-                .set(buildKey(jti), "1", ttl, TimeUnit.MILLISECONDS);
+        redisService.set(buildKey(jti), "1", ttl);
     }
-
 
     public boolean isBlacklisted(String jti){
-
-        return Boolean.TRUE.equals(redis.hasKey(buildKey(jti))
-        );
+        return Boolean.TRUE.equals(redisService.exists(buildKey(jti)));
     }
 }
-

@@ -27,7 +27,7 @@ public class StudentEventListener {
 
     @EventListener
     @Transactional
-    public void handleStudentEnrolled (StudentEnrolledEvent event) {
+    public void handleStudentTranscript (StudentEnrolledEvent event) {
 
         log.info("Criando esqueleto de boletim para o aluno {}", event.studentId());
 
