@@ -5,10 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+@Configuration // Diz ao Spring que esta classe contém definições de "Beans" (objetos gerenciados pelo Spring).
 public class PasswordHash {
 
-    @Bean
+    @Bean // Bean é uma forma de instanciar no IoC da aplicação um objeto que pode ser utilizado em outro momento
+    // do codigo sem precisar usar o new.
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

@@ -14,7 +14,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
-@Component
+@Component // Transforma a classe toda em um bean que pode ser adicionado em outra classe.
 public class JwtUtil {
 
     @Value("${jwt.secretKey}")

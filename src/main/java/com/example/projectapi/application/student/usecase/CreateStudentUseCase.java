@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Ele já injeta todas as dependencias do @Bean automaticamente
 @Slf4j
 public class CreateStudentUseCase {
 
