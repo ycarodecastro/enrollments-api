@@ -7,10 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.example.projectapi.unitest.utils.ValidationAssertions.assertOnlyViolationsForPath;
+import static com.example.projectapi.utils.ValidationAssertions.assertOnlyViolationsForPath;
 
 @DisplayName("Unit - DTO - SubjectRequest")
-public class SubjectDtoTest {
+class SubjectDtoTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 

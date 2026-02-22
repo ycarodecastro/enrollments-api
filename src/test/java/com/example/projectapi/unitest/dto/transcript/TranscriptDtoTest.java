@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Year;
 
-import static com.example.projectapi.unitest.utils.ValidationAssertions.assertOnlyViolationsForPath;
+import static com.example.projectapi.utils.ValidationAssertions.assertOnlyViolationsForPath;
 
 @DisplayName("Unit - DTO - TranscriptRequest")
-public class TranscriptDtoTest {
+class TranscriptDtoTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 

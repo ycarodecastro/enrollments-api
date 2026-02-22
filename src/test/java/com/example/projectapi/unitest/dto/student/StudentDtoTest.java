@@ -13,10 +13,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 
-import static com.example.projectapi.unitest.utils.ValidationAssertions.assertOnlyViolationsForPath;
+import static com.example.projectapi.utils.ValidationAssertions.assertOnlyViolationsForPath;
 
 @DisplayName("Unit - DTO - StudentRequest")
-public class StudentDtoTest {
+class StudentDtoTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 

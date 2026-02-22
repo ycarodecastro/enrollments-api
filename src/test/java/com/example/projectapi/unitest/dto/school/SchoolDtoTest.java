@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.example.projectapi.unitest.utils.ValidationAssertions.assertOnlyViolationsForPath;
+import static com.example.projectapi.utils.ValidationAssertions.assertOnlyViolationsForPath;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Unit - DTO - SchoolRequest")
-public class SchoolDtoTest {
+class SchoolDtoTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
