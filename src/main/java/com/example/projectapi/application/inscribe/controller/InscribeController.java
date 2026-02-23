@@ -123,9 +123,10 @@ public class InscribeController {
     public ResponseEntity<ResponseDefault<InscribeResponseDTO>> update(
             @Parameter(hidden = true) @CurrentUser UserEntity currentUser,
             @PathVariable Long id,
-            @RequestBody @Valid InscribeUpdateDTO request
+            @RequestBody @Valid InscribeUpdateDTO request,
+            @RequestHeader("If-Match") Long version
     ) {
-        InscribeResponseDTO updatedInscribe = updateInscribeUseCase.execute(currentUser, request, id);
+        InscribeResponseDTO updatedInscribe = updateInscribeUseCase.execute(currentUser, request, id, version);
 
         return ResponseEntity.ok(
                 new ResponseDefault<>(

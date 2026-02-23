@@ -123,10 +123,11 @@ public class OfferController {
     public ResponseEntity<ResponseDefault<OfferResponseDTO>> update(
             @PathVariable Long id,
             @Parameter(hidden = true) @CurrentUser UserEntity currentUser,
-            @RequestBody @Valid OfferUpdateDTO dto
+            @RequestBody @Valid OfferUpdateDTO dto,
+            @RequestHeader("If-Match") Long version
 
     ){
-        OfferResponseDTO updatedOffer = updateOfferUseCase.execute(currentUser, dto, id);
+        OfferResponseDTO updatedOffer = updateOfferUseCase.execute(currentUser, dto, id, version);
 
         return ResponseEntity.ok(
                 new ResponseDefault<>(

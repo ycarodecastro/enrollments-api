@@ -48,6 +48,10 @@ public class UserEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // Adicionando um sistema de concorrência
+    @Version
+    private Long version;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

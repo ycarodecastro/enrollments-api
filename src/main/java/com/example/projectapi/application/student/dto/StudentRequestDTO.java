@@ -43,6 +43,8 @@ public record StudentRequestDTO (
     @Schema(description = "Endereco do aluno.")
     @NotNull(message = "O endereço é inválido.")
     @Valid
-    AddressRequestDTO address
+    AddressRequestDTO address,
+
+    Long version
 
 ) {}

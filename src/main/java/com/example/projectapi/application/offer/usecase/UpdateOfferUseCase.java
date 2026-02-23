@@ -13,6 +13,7 @@ import com.example.projectapi.infra.exception.offer.OfferNotFoundException;
 import com.example.projectapi.infra.exception.school.SchoolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,8 @@ public class UpdateOfferUseCase {
     public OfferResponseDTO execute(
             UserEntity currentUser,
             OfferUpdateDTO dto,
-            Long id
+            Long id,
+            Long version
     ) {
 
         SchoolEntity school = schoolRepository
@@ -44,6 +46,11 @@ public class UpdateOfferUseCase {
                     log.warn("Falha ao atualizar oferta. Oferta não encontrada.");
                     return new OfferNotFoundException();
                 });
+
+        if (!offer.getVersion().equals(version)) {
+            log.warn("Conflito de versao detectado em {}: {}", offer.getId(), offer.getVersion());
+            throw new OptimisticLockingFailureException("Versão obsoleta");
+        }
 
         if (!offer.getSchool().getId().equals(school.getId())) {
             log.warn("Falha ao atualizar oferta. Permissão negada.");

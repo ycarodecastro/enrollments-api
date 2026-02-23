@@ -10,6 +10,7 @@ public record AddressResponseDTO(
         String city,
         StateUF state,
         Integer number,
-        String complement
+        String complement,
+        Long version
 ) {
 }

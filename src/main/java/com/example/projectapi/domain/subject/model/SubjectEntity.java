@@ -28,6 +28,7 @@ public class SubjectEntity {
     @Column(nullable = false)
     private String name;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id", nullable = false)
     private SchoolEntity school; // A matéria obrigatoriamente pertence a uma escola

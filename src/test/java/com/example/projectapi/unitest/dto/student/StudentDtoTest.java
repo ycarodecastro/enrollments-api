@@ -117,7 +117,7 @@ class StudentDtoTest {
     }
 
     private StudentRequestDTO createValidStudentRequest(String name, String rg, String cpf, LocalDate dateBirth, UserRequestDTO user, AddressRequestDTO address) {
-        return new StudentRequestDTO(name, rg, cpf, dateBirth, user, address);
+        return new StudentRequestDTO(name, rg, cpf, dateBirth, user, address, null);
     }
 
     private UserRequestDTO createValidUser() {

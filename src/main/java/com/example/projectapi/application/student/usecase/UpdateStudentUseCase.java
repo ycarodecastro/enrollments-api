@@ -13,6 +13,7 @@ import com.example.projectapi.infra.exception.student.StudentEmailAlreadyExistsE
 import com.example.projectapi.infra.exception.student.StudentNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,8 @@ public class UpdateStudentUseCase {
     @Transactional
     public StudentResponseDTO execute(
             UserEntity currentUser,
-            StudentUpdateDTO dto
+            StudentUpdateDTO dto,
+            Long version
     ) {
         StudentEntity student = studentRepository
                 .findByUserId(currentUser.getId())
@@ -42,6 +44,11 @@ public class UpdateStudentUseCase {
                     log.warn("Falha ao atualizar estudante. Estudante não encontrado.");
                     return new StudentNotFoundException();
                 });
+
+        if (!student.getVersion().equals(version)) {
+            log.warn("Conflito de versao detectado em {}: {}", student.getId(), student.getVersion());
+            throw new OptimisticLockingFailureException("Versão obsoleta");
+        }
 
         if (dto.user() != null && dto.user().email() != null) {
             String newEmail = dto.user().email();

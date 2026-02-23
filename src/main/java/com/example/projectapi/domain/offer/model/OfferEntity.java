@@ -59,6 +59,10 @@ public class OfferEntity {
     @Column(nullable = false)
     private LocalDate endDate;
 
+    // Adicionando um sistema de concorrência
+    @Version
+    private Long version;
+
     @PrePersist
     protected void onCreate() {
         if (this.startDate == null) {

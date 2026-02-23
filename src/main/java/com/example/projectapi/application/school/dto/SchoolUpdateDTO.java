@@ -6,6 +6,7 @@ import com.example.projectapi.infra.serialization.CleanupDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
 
@@ -26,5 +27,8 @@ public record SchoolUpdateDTO (
 
         @Schema(description = "Endereco da escola.")
         @Valid
-        AddressUpdateDTO address
+        AddressUpdateDTO address,
+
+        @NotNull
+        Long version
 ) {}

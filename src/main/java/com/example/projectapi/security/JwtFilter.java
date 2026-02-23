@@ -87,7 +87,8 @@ public class JwtFilter extends OncePerRequestFilter {
                                 List.of(authority)
                         );
 
-                // Indexa todos os dados extra ao usuario ( IP, ID)
+                // Indexa todos os dados extra ao usuario ( IP, ID
+                // )
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 // Autentica o usuario de fato para o sistema

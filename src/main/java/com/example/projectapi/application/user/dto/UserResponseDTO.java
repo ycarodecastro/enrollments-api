@@ -11,6 +11,7 @@ public record UserResponseDTO (
     boolean active,
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
 
+    Long version
 ) {}

@@ -4,6 +4,7 @@ import com.example.projectapi.application.address.dto.AddressUpdateDTO;
 import com.example.projectapi.application.user.dto.UserUpdateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
@@ -24,5 +25,8 @@ public record StudentUpdateDTO (
 
         @Schema(description = "Endereco do aluno.")
         @Valid
-        AddressUpdateDTO address
+        AddressUpdateDTO address,
+
+        @NotNull
+        Long version
 ) {}

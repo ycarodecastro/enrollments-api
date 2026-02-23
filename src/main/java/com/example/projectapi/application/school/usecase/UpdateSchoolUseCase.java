@@ -14,6 +14,7 @@ import com.example.projectapi.infra.exception.school.SchoolEmailAlreadyExistsExc
 import com.example.projectapi.infra.exception.school.SchoolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,12 +32,21 @@ public class UpdateSchoolUseCase {
     private final UserRepository userRepository;
 
     @Transactional
-    public SchoolResponseDTO execute(UserEntity currentUser, SchoolUpdateDTO dto) {
+    public SchoolResponseDTO execute(
+            UserEntity currentUser,
+            SchoolUpdateDTO dto,
+            Long version
+    ) {
         SchoolEntity school = schoolRepository.findByUserId(currentUser.getId())
                 .orElseThrow(() -> {
                     log.warn("Falha ao atualizar escola. Escola não encontrada.");
                     return new SchoolNotFoundException();
                 });
+
+        if (!school.getVersion().equals(version)) {
+            log.warn("Conflito de versao detectado em {}: {}", school.getId(), school.getVersion());
+            throw new OptimisticLockingFailureException("Versão obsoleta");
+        }
 
         if (dto.cnpj() != null && !dto.cnpj().equals(school.getCnpj())) {
             if (schoolRepository.existsByCnpj(dto.cnpj())) {

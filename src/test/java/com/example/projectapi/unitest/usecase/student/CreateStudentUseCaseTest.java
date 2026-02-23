@@ -91,7 +91,8 @@ public class CreateStudentUseCaseTest {
                 "39053344705",
                 LocalDate.of(2005, 5, 10),
                 user,
-                address
+                address,
+                null
         );
     }
 }

@@ -4,5 +4,6 @@ public record GradeResponseDTO(
         Long id,
         String subjectName,
         Double value,
-        String period
+        String period,
+        Long version
 ) {}

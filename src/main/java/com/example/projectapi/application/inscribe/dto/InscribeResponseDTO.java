@@ -7,6 +7,7 @@ public record InscribeResponseDTO(
         Long offer_id,
         String studentName,
         // necessario quando adicionar o sistema de notas -> String studentRegistry,
-        InscribeStatus status
+        InscribeStatus status,
+        Long version
 ) {
 }

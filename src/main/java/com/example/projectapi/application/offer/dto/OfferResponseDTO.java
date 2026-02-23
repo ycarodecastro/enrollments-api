@@ -14,5 +14,6 @@ public record OfferResponseDTO(
     LocalDate startDate,
     LocalDate endDate,
 
-    Integer totalInscribed
+    Integer totalInscribed,
+    Long version
 ) {}

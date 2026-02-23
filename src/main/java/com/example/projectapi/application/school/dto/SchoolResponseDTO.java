@@ -7,5 +7,7 @@ public record SchoolResponseDTO(
    String name,
    String email,
 
-   AddressResponseDTO address
+   AddressResponseDTO address,
+
+   Long version
 ) {}

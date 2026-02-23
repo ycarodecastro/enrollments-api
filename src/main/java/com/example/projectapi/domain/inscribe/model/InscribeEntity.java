@@ -32,6 +32,10 @@ public class InscribeEntity {
     @Builder.Default
     private InscribeStatus status = InscribeStatus.PENDENTE;
 
+    // Adicionando um sistema de concorrência
+    @Version
+    private Long version;
+
     // Relacionamento
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -38,6 +38,10 @@ public class SchoolEntity {
     @Column(nullable = false, unique = true, length = 14)
     private String cnpj;
 
+    // Adicionando um sistema de concorrência
+    @Version
+    private Long version;
+
     // Relacionamento
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

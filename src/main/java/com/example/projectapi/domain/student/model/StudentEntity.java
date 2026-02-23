@@ -50,6 +50,11 @@ public class StudentEntity {
     @Column(nullable = false)
     private LocalDate dateBirth;
 
+    // Adicionando um sistema de concorrência
+
+    @Version
+    private Long version;
+
     // Relacionamentos
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

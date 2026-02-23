@@ -14,6 +14,7 @@ import com.example.projectapi.infra.exception.grade.GradeNotFoundException;
 import com.example.projectapi.infra.exception.school.SchoolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,8 @@ public class UpdateGradeUseCase {
             UserEntity currentUser,
             Long transcriptId,
             Long gradeId,
-            GradeUpdateDTO dto
+            GradeUpdateDTO dto,
+            Long version
     ) {
         SchoolEntity school = schoolRepository.findByUserId(currentUser.getId())
                 .orElseThrow(() -> {
@@ -44,6 +46,11 @@ public class UpdateGradeUseCase {
                     log.warn("Falha ao atualizar nota. Nota nao encontrada.");
                     return new GradeNotFoundException();
                 });
+
+        if (!grade.getVersion().equals(version)) {
+            log.warn("Conflito de versao detectado em {}: {}", grade.getId(), grade.getVersion());
+            throw new OptimisticLockingFailureException("Versão obsoleta");
+        }
 
         if (!grade.getTranscript().getSchool().getId().equals(school.getId())) {
             log.warn("Falha ao atualizar nota. Escola sem permissao na nota {}.", gradeId);

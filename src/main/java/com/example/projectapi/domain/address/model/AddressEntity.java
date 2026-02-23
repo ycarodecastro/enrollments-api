@@ -45,4 +45,8 @@ public class AddressEntity {
     @Column(nullable = true)
     private String complement;
 
+    // Adicionando um sistema de concorrência
+    @Version
+    private Long version;
+
 }

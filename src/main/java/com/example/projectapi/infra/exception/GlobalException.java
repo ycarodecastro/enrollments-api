@@ -2,8 +2,10 @@ package com.example.projectapi.infra.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +24,7 @@ import java.util.Map;
 // todas as exceçõse dos controllers.
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalException {
 
     // ExceptionHandler é um metodo "socorrista", ele especifica o que retornar em um erro
@@ -54,6 +57,15 @@ public class GlobalException {
 
         // Retorna um HTTP
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<Map<String, Object>> handlerOptimisticLock(
+            OptimisticLockingFailureException ex,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.LOCKED)
+                .body(buildResponse(HttpStatus.LOCKED, ex.getMessage(), request));
     }
 
     // Anotação que captura o exception EntityNotFound.

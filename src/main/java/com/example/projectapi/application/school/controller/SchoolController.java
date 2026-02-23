@@ -152,10 +152,11 @@ public class SchoolController {
     })
     public ResponseEntity<ResponseDefault<SchoolResponseDTO>> update(
             @Parameter(hidden = true) @CurrentUser UserEntity currentUser,
-            @RequestBody @Valid SchoolUpdateDTO updateDTO
+            @RequestBody @Valid SchoolUpdateDTO updateDTO,
+            @RequestHeader("If-Match") Long version
     ){
 
-        SchoolResponseDTO updatedSchool = updateSchoolUseCase.execute(currentUser, updateDTO);
+        SchoolResponseDTO updatedSchool = updateSchoolUseCase.execute(currentUser, updateDTO, version);
 
         return ResponseEntity.ok(
                 new ResponseDefault<>(

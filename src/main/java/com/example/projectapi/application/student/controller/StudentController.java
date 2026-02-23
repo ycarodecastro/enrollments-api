@@ -113,9 +113,10 @@ public class StudentController {
     })
     public ResponseEntity<ResponseDefault<StudentResponseDTO>> update(
             @Parameter(hidden = true) @CurrentUser UserEntity currentUser,
-            @RequestBody @Valid StudentUpdateDTO updateDTO
+            @RequestBody @Valid StudentUpdateDTO updateDTO,
+            @RequestHeader("If-Match") Long version
     ) {
-        StudentResponseDTO UpdatedStudent = updateStudentUseCase.execute(currentUser, updateDTO);
+        StudentResponseDTO UpdatedStudent = updateStudentUseCase.execute(currentUser, updateDTO, version);
 
         return ResponseEntity.ok(
                 new ResponseDefault<>(

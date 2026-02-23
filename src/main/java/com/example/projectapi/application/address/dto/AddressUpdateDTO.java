@@ -5,6 +5,7 @@ import com.example.projectapi.infra.serialization.CleanupDeserializer;
 import com.example.projectapi.infra.validation.cep.Cep;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -32,6 +33,9 @@ public record AddressUpdateDTO(
         Integer number,
 
         @Schema(description = "Complemento (opcional).", example = "Apto 12")
-        String complement
+        String complement,
+
+        @NotNull
+        Long version
 ) {
 }

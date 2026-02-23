@@ -33,6 +33,10 @@ public class GradeEntity {
     @Column(nullable = false)
     private String period; // Ex: "1º Bimestre", "Exame Final"
 
+    // Adicionando um sistema de concorrência
+    @Version
+    private Long version;
+
     // Relacionamento
     @ManyToOne
     @JoinColumn(name = "transcript_id", nullable = false)

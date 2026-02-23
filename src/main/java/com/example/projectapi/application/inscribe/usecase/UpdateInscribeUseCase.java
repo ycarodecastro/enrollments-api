@@ -20,6 +20,7 @@ import com.example.projectapi.infra.exception.offer.OfferNoAvailableSeatsExcepti
 import com.example.projectapi.infra.exception.school.SchoolNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -41,7 +42,8 @@ public class UpdateInscribeUseCase {
     public InscribeResponseDTO execute(
             UserEntity currentUser,
             InscribeUpdateDTO dto,
-            Long id
+            Long id,
+            Long version
     ) {
         SchoolEntity school = schoolRepository
                 .findByUserId(currentUser.getId())
@@ -55,6 +57,11 @@ public class UpdateInscribeUseCase {
                     log.warn("Falha ao atualizar inscricao. Inscricao nao encontrada.");
                     return new InscribeNotFoundException();
                 });
+
+        if (!inscribe.getVersion().equals(version)) {
+            log.warn("Conflito de versao detectado em {}: {}", inscribe.getId(), inscribe.getVersion());
+            throw new OptimisticLockingFailureException("Versão obsoleta");
+        }
 
         if (!inscribe.getOffer().getSchool().getId().equals(school.getId())) {
             log.warn("Falha ao atualizar inscricao. Permissao negada.");

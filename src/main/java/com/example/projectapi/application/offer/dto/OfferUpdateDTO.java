@@ -3,6 +3,7 @@ package com.example.projectapi.application.offer.dto;
 import com.example.projectapi.infra.validation.date.DateRange;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
@@ -31,5 +32,8 @@ public record OfferUpdateDTO(
         LocalDate startDate,
 
         @Schema(description = "Data de fim (igual ou posterior ao inicio).", type = "string", format = "date", example = "2025-12-10")
-        LocalDate endDate
+        LocalDate endDate,
+
+        @NotNull
+        Long version
 ) {}

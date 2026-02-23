@@ -67,6 +67,7 @@ class ProfileStudentUseCaseTest {
                 "Fortaleza",
                 StateUF.CE,
                 12, // Campos exemplo que costumam ter no DTO
+                null,
                 null
         );
 
